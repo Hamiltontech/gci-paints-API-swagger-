@@ -90,35 +90,6 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/SalesOrder'
-    post:
-      tags: [Sales Orders]
-      summary: Create a new sales order
-      description: Submits a new sales order to the system.
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SalesOrder'
-      responses:
-        '201':
-          description: Sales order created successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: success
-                  message:
-                    type: string
-                    example: Sales order created successfully
-                  SalesID:
-                    type: string
-                    example: SO-12345
 
   /sales-quotations:
     get:
@@ -142,35 +113,6 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/SalesQuotation'
-    post:
-      tags: [Sales Quotations]
-      summary: Create a new sales quotation
-      description: Submits a new sales quotation to the system.
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SalesQuotation'
-      responses:
-        '201':
-          description: Sales quotation created successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: success
-                  message:
-                    type: string
-                    example: Sales quotation created successfully
-                  QuotationID:
-                    type: string
-                    example: SQ-12345
 
 components:
   securitySchemes:
