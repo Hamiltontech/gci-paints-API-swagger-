@@ -1,0 +1,1 @@
+# gci-paints-API-swagger-

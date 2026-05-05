@@ -1,0 +1,401 @@
+openapi: 3.0.1
+info:
+  title: GCI Paints Integration API
+  description: API for integrating with GCI Paints systems, covering Customers, Item Lists, Sales Orders, and Sales Quotations.
+  version: 1.0.0
+servers:
+  - url: http://69.30.237.162:8069/
+    description: Production server
+
+tags:
+  - name: Customers
+    description: Operations related to customers and their items
+  - name: Sales Orders
+    description: Operations related to sales orders
+  - name: Sales Quotations
+    description: Operations related to sales quotations
+
+paths:
+  /customers:
+    get:
+      tags: [Customers]
+      summary: Get customers list
+      description: Returns a list of customers based on the integration scope.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Customer'
+
+  /customer-items:
+    get:
+      tags: [Customers]
+      summary: Get customer item list
+      description: Returns items associated with customers, including pricing and stock information.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: CustID
+          in: query
+          description: Filter items by Customer ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CustomerItemList'
+
+  /sales-orders:
+    get:
+      tags: [Sales Orders]
+      summary: Get sales orders
+      description: Returns a list of sales orders with their lines.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SalesOrder'
+    post:
+      tags: [Sales Orders]
+      summary: Create a new sales order
+      description: Submits a new sales order to the system.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SalesOrder'
+      responses:
+        '201':
+          description: Sales order created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Sales order created successfully
+                  SalesID:
+                    type: string
+                    example: SO-12345
+
+  /sales-quotations:
+    get:
+      tags: [Sales Quotations]
+      summary: Get sales quotations
+      description: Returns a list of sales quotations with their lines.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SalesQuotation'
+    post:
+      tags: [Sales Quotations]
+      summary: Create a new sales quotation
+      description: Submits a new sales quotation to the system.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SalesQuotation'
+      responses:
+        '201':
+          description: Sales quotation created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Sales quotation created successfully
+                  QuotationID:
+                    type: string
+                    example: SQ-12345
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Enter your bearer token in the format 'Bearer <token>'
+
+  schemas:
+    Customer:
+      type: object
+      properties:
+        CompanyID:
+          type: string
+          example: "GCIJ"
+        CustID:
+          type: string
+          example: "Cust001315-01"
+        CustName:
+          type: string
+          example: "ORBI LAC CO"
+        CustWH:
+          type: string
+          example: "FG05"
+        Custlang:
+          type: string
+          example: "Eng"
+        Custlocation:
+          type: string
+          example: "MEHDAR"
+        CusrrancyCode:
+          type: string
+          example: "USD"
+        CustBalance:
+          type: number
+          format: double
+          example: 56465455.000
+
+    CustomerItemList:
+      type: object
+      properties:
+        CompanyID:
+          type: string
+          example: "GCIJ"
+        CustWH:
+          type: string
+          example: "FG05"
+        Custlocation:
+          type: string
+          example: "MEHDAR"
+        CustID:
+          type: string
+          example: "Cust001315-01"
+        ItemID:
+          type: string
+          example: "1GP0400B0220G1103.6L"
+        ItemNameAR:
+          type: string
+          example: "جولدن- بيس كوت 400- ازرق مخضر 220- حديد- جالون - 3.6 لتر"
+        ItemNameEng:
+          type: string
+          example: "Golden- Base Coat 400- Jet Black Bl-202- Gallon - 3.6 Ltr"
+        ItemUnit:
+          type: string
+          example: "Gallon"
+        ItemOnHand:
+          type: number
+          example: 500
+        Price:
+          type: number
+          example: 10
+        LineDiscount:
+          type: string
+          example: "10%"
+        MultilineDiscount:
+          type: string
+          example: "5%"
+        FinalPrice:
+          type: number
+          example: 8.55
+
+    SalesOrder:
+      type: object
+      properties:
+        Header:
+          $ref: '#/components/schemas/SalesOrderHeader'
+        Lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/SalesOrderLine'
+
+    SalesOrderHeader:
+      type: object
+      properties:
+        SalesID:
+          type: string
+          example: "SO-001"
+        CustID:
+          type: string
+          example: "Cust001315-01"
+        CustomerName:
+          type: string
+          example: "ORBI LAC CO"
+        SalesQuotationRef:
+          type: string
+          example: "SQ-001"
+        Date:
+          type: string
+          format: date
+          example: "2024-05-05"
+        Status:
+          type: string
+          enum: [Open, Deliverd, invoice]
+          example: "Open"
+
+    SalesOrderLine:
+      type: object
+      properties:
+        SalesID:
+          type: string
+          example: "SO-001"
+        LineNo:
+          type: integer
+          example: 1
+        ItemID:
+          type: string
+          example: "1GP0400B0220G1103.6L"
+        Name:
+          type: string
+          example: "Golden- Base Coat 400"
+        QTYOpen:
+          type: number
+          example: 10
+        QTYDeliverd:
+          type: number
+          example: 0
+        QTYInvoice:
+          type: number
+          example: 0
+        Price:
+          type: number
+          example: 10
+        LineDiscount:
+          type: string
+          example: "10%"
+        MultilineDiscount:
+          type: string
+          example: "5%"
+        LineAmount:
+          type: number
+          example: 85.5
+        Tax:
+          type: number
+          example: 12.82
+        Status:
+          type: string
+          enum: [Open, Deliverd, invoice]
+          example: "Open"
+
+    SalesQuotation:
+      type: object
+      properties:
+        Header:
+          $ref: '#/components/schemas/SalesQuotationHeader'
+        Lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/SalesQuotationLine'
+
+    SalesQuotationHeader:
+      type: object
+      properties:
+        QuotationID:
+          type: string
+          example: "SQ-001"
+        CustID:
+          type: string
+          example: "Cust001315-01"
+        CustomerName:
+          type: string
+          example: "ORBI LAC CO"
+        PORef:
+          type: string
+          example: "PO-999"
+        Date:
+          type: string
+          format: date
+          example: "2024-05-05"
+        Status:
+          type: string
+          enum: [open, Confirmed]
+          example: "open"
+
+    SalesQuotationLine:
+      type: object
+      properties:
+        SalesID:
+          type: string
+          description: Referenced Sales ID or Quotation ID for the line
+          example: "SQ-001"
+        LineNo:
+          type: integer
+          example: 1
+        ItemID:
+          type: string
+          example: "1GP0400B0220G1103.6L"
+        Name:
+          type: string
+          example: "Golden- Base Coat 400"
+        QTY:
+          type: number
+          example: 10
+        Price:
+          type: number
+          example: 10
+        LineDiscount:
+          type: string
+          example: "10%"
+        MultilineDiscount:
+          type: string
+          example: "5%"
+        LineAmount:
+          type: number
+          example: 85.5
+        Tax:
+          type: number
+          example: 12.82
