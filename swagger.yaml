@@ -16,7 +16,7 @@ tags:
     description: Operations related to sales quotations
 
 paths:
-  /customers:
+  /api/v1/customers:
     get:
       tags: [Customers]
       summary: Get customers list
@@ -39,7 +39,7 @@ paths:
                     items:
                       $ref: '#/components/schemas/Customer'
 
-  /customer-items:
+  /api/v1/customer-items:
     get:
       tags: [Customers]
       summary: Get customer item list
@@ -68,7 +68,7 @@ paths:
                     items:
                       $ref: '#/components/schemas/CustomerItemList'
 
-  /sales-orders:
+  /api/v1/sales-orders:
     get:
       tags: [Sales Orders]
       summary: Get sales orders
@@ -91,7 +91,7 @@ paths:
                     items:
                       $ref: '#/components/schemas/SalesOrder'
 
-  /sales-quotations:
+  /api/v1/sales-quotations:
     get:
       tags: [Sales Quotations]
       summary: Get sales quotations
